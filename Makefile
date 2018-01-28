@@ -5,9 +5,11 @@ LEMON := $(BASE)/libs/lemon/build/lemon
 RE2C := $(BASE)/libs/re2c/build/bin/re2c
 
 CC := gcc
+CFLAGS := -std=gnu11 -O3
 
-all: $(RE2C) $(LEMON)
-	@echo 'libraries built'
+all: build/app $(RE2C) $(LEMON)
+	$<
+
 
 $(RE2C):
 	$(shell mkdir -p ./libs/re2c/build/)
@@ -17,8 +19,15 @@ $(RE2C):
 
 $(LEMON):
 	$(shell mkdir -p ./libs/lemon/build/)
-	cd $(BASE)/libs/lemon/ && $(CC) -std=gnu11 -O3 -o build/lemon lemon.c
+	cd $(BASE)/libs/lemon/ && $(CC) $(CFLAGS) -o build/lemon lemon.c
 	cp $(BASE)/libs/lemon/lempar.c $(BASE)/libs/lemon/build/lempar.c
+
+build/app: app.c json_scan.gen.c
+	@(mkdir -p build/)
+	$(CC) $(CFLAGS) -o $@ $^
+
+json_scan.gen.c: json_scan.re.c
+	$(RE2C) -W --tags -i -o $@ $<
 
 clean:
 	rm -rf build
