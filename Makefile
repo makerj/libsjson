@@ -7,8 +7,8 @@ RE2C := $(BASE)/libs/re2c/build/bin/re2c
 CC := gcc
 CFLAGS := -std=gnu11 -O3
 
-all: build/app $(RE2C) $(LEMON)
-	$<
+all: $(RE2C) $(LEMON) build/app
+	build/app
 
 
 $(RE2C):
