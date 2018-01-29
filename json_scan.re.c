@@ -50,11 +50,10 @@ static bool scanner_fill(struct scanner* scanner, ssize_t amount) {
 	ssize_t len = scanner->lim - scanner->cur;
 	ssize_t cap = SCANNER_BUFSIZ - len;
 
-	/* printf("fill: val[%c] cap[%d] amount[%d] cur[%p] lim[%p]\n", */
-	/* 		*scanner->cur, (int)cap, (int)amount, scanner->cur, scanner->lim); */
+	/* printf("fill: val[%c] len[%d] cap[%d] amount[%d] cur[%p] lim[%p]\n", */
+	/* 		*scanner->cur, (int)len, (int)cap, (int)amount, scanner->cur, scanner->lim); */
 
-
-	if(unlikely(amount >= cap))
+	if(unlikely(len < 0) || unlikely(amount >= cap))
 		return false;
 
 	// left shifting
