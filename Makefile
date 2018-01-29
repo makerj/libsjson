@@ -22,12 +22,15 @@ $(LEMON):
 	cd $(BASE)/libs/lemon/ && $(CC) $(CFLAGS) -o build/lemon lemon.c
 	cp $(BASE)/libs/lemon/lempar.c $(BASE)/libs/lemon/build/lempar.c
 
-build/app: app.c json_scan.gen.c
+build/app: app.c json_scan.gen.c json_gram.gen.c
 	@(mkdir -p build/)
 	$(CC) $(CFLAGS) -o $@ $^
 
 json_scan.gen.c: json_scan.re.c
 	$(RE2C) -W --tags -i -o $@ $<
+
+json_gram.gen.c: json_gram.gen.yy
+	$(LEMON) $<
 
 clean:
 	rm -rf build

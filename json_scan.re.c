@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include "json_private.h"
+#include "json_gram.gen.h"
 
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)     __builtin_expect((x),0)
@@ -87,7 +88,7 @@ start:
 		re2c:define:YYCURSOR = scanner->cur;
 		re2c:define:YYMARKER = scanner->mark;
 		re2c:define:YYLIMIT = scanner->lim;
-		re2c:define:YYFILL = "if(!scanner_fill(scanner, @@)) return SR_NOMEM;";
+		re2c:define:YYFILL = "if(!scanner_fill(scanner, @@)) return SERR_NOMEM;";
 		re2c:define:YYFILL:naked = 1;
 
 		end = "\x00";
@@ -100,31 +101,32 @@ start:
 		rbrace = '}';
 		esc_dquote = '\\"';
 
+		num_float = [0-9]+ "." [0-9]*;
 		num_bin = '0b'[01]+;
 		num_oct = '0'[1-7][0-7]*;
 		num_dec = [1-9][0-9]*;
 		num_hex = '0x'[0-9a-fA-F];
-		num = @ts (num_bin | num_oct | num_dec | num_hex) @te;
+		num = @ts (num_bin | num_oct | num_dec | num_hex | num_float) @te;
 		str = ["] @ts (esc_dquote | [^"])* @te ["];
 		null = 'null';
 		bool_true = 'true';
 		bool_false = 'false';
 
-		*			{ RET(SR_BADCHAR); }
+		*			{ RET(SERR_BADCHAR); }
+		end			{ RET(SERR_EOF); }
+
 		white		{ goto start; }
-		end			{ RET(SR_EOF); }
 		num			{ RETV(SR_NUMBER); }
 		str			{ RETV(SR_STRING); }
 		null		{ RET(SR_NULL); }
-		bool_true	{ RET(SR_BOOL_TRUE); }
-		bool_false	{ RET(SR_BOOL_FALSE); }
+		bool_true	{ RET(SR_BOOL); }
+		bool_false	{ RET(SR_BOOL); }
 		colon		{ RET(SR_COLON); }
 		comma		{ RET(SR_COMMA); }
 		lbracket	{ RET(SR_LBRACKET); }
 		rbracket	{ RET(SR_RBRACKET); }
 		lbrace		{ RET(SR_LBRACE); }
 		rbrace		{ RET(SR_RBRACE); }
-		esc_dquote	{ RET(SR_ESC_DQUOTE); }
 	 */
 
 	return -1;
