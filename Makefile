@@ -7,8 +7,8 @@ RE2C := $(BASE)/libs/re2c/build/bin/re2c
 CC := gcc
 CFLAGS := -std=gnu11 -O3
 
-all: $(RE2C) $(LEMON) build/app
-	build/app
+all: $(RE2C) $(LEMON) build/json
+	build/json
 
 
 $(RE2C):
@@ -22,7 +22,7 @@ $(LEMON):
 	cd $(BASE)/libs/lemon/ && $(CC) $(CFLAGS) -o build/lemon lemon.c
 	cp $(BASE)/libs/lemon/lempar.c $(BASE)/libs/lemon/build/lempar.c
 
-build/app: app.c json_scan.gen.c json_gram.gen.c
+build/json: json.c json_scan.gen.c json_gram.gen.c
 	@(mkdir -p build/)
 	$(CC) $(CFLAGS) -o $@ $^
 

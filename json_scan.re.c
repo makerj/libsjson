@@ -101,12 +101,12 @@ start:
 		rbrace = '}';
 		esc_dquote = '\\"';
 
-		num_float = [0-9]+ "." [0-9]*;
 		num_bin = '0b'[01]+;
 		num_oct = '0'[1-7][0-7]*;
 		num_dec = [1-9][0-9]*;
 		num_hex = '0x'[0-9a-fA-F];
-		num = @ts (num_bin | num_oct | num_dec | num_hex | num_float) @te;
+		num_int = @ts (num_bin | num_oct | num_dec | num_hex ) @te;
+		num_float = @ts [0-9]+ "." [0-9]* @te;
 		str = ["] @ts (esc_dquote | [^"])* @te ["];
 		null = 'null';
 		bool_true = 'true';
@@ -116,7 +116,8 @@ start:
 		end			{ RET(SERR_EOF); }
 
 		white		{ goto start; }
-		num			{ RETV(SR_NUMBER); }
+		num_int		{ RETV(SR_NUM_INT); }
+		num_float	{ RETV(SR_NUM_FLOAT); }
 		str			{ RETV(SR_STRING); }
 		null		{ RET(SR_NULL); }
 		bool_true	{ RET(SR_BOOL); }
