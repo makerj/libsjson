@@ -15,8 +15,9 @@ struct hmap_entry {
 };
 
 struct hmap* hmap_create();
+void hmap_destroy(struct hmap* self, void(*key_free)(void*), void(*value_free)(void*));
 int hmap_put(struct hmap* self, char* key, void* value);
 void* hmap_get(struct hmap* self, char* key);
-void* hmap_remove(struct hmap* self, char* key);
+void* hmap_remove(struct hmap* self, char* key, void(*key_free)(void*));
 
 #endif

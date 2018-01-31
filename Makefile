@@ -6,6 +6,7 @@ RE2C := $(BASE)/libs/re2c/build/bin/re2c
 
 CC := gcc
 CFLAGS := -std=gnu11 -O3
+# CFLAGS := -std=gnu11 -O0 -g
 
 all: $(RE2C) $(LEMON) build/json
 	build/json

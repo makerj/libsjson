@@ -10,6 +10,16 @@ struct vec* vec_create() {
 	return v;
 }
 
+void vec_destroy(struct vec* self, void(*item_free)(void*)) {
+	if(item_free) {
+		for(size_t i = 0; i < self->length; ++i)
+			item_free(self->items[i]);
+	}
+
+	free(self->items);
+	free(self);
+}
+
 int vec_push_back(struct vec* self, void* item) {
 	if(self->length + 1 >= self->capacity) {
 		void** new_items = (void**)realloc(self->items, sizeof(void*) * self->capacity * 2);
