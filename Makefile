@@ -22,7 +22,7 @@ $(LEMON):
 	cd $(BASE)/libs/lemon/ && $(CC) $(CFLAGS) -o build/lemon lemon.c
 	cp $(BASE)/libs/lemon/lempar.c $(BASE)/libs/lemon/build/lempar.c
 
-build/json: json.c json_scan.gen.c json_gram.gen.c
+build/json: json.c json_scan.gen.c json_gram.gen.c ./libs/ds/hmap.c ./libs/ds/vec.c
 	@(mkdir -p build/)
 	$(CC) $(CFLAGS) -o $@ $^
 

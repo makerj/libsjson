@@ -22,6 +22,7 @@ typedef struct {
 
 // Scanner Result -----------------------------------------------------------------------
 #define SERR_NOMEM		-2
+#define SERR_FATAL		-2
 #define SERR_EOF		-1
 #define SERR_BADCHAR	0
 

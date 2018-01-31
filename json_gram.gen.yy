@@ -46,11 +46,11 @@ list_content ::= list_content(A) SR_COMMA object(B).	{ json_node_list_add(A, B);
 
 object(A) ::= SR_LBRACE SR_RBRACE.									{ A = json_node_create(JSONTYPE_OBJECT); }
 object(A) ::= SR_LBRACE object_content(B) SR_RBRACE.				{ A = B; }
-object_content(A) ::= SR_STRING(V) SR_COLON primitive(B).			{ A = json_node_create(JSONTYPE_OBJECT), json_node_map_put(A, V.val.as_string, B); }
-object_content(A) ::= SR_STRING(V) SR_COLON list(B).				{ A = json_node_create(JSONTYPE_OBJECT), json_node_map_put(A, V.val.as_string, B); }
-object_content(A) ::= SR_STRING(V) SR_COLON object(B).				{ A = json_node_create(JSONTYPE_OBJECT), json_node_map_put(A, V.val.as_string, B); }
-/* object_content ::= object_content(A) SR_COMMA object_content(B).	{ json_node_map_merge(A, B, true); } // looks quite fancy. but decreases performance */
-object_content ::= object_content(A) SR_COMMA SR_STRING(V) SR_COLON primitive(B).{ json_node_map_put(A, V.val.as_string, B); }
-object_content ::= object_content(A) SR_COMMA SR_STRING(V) SR_COLON list(B).	{ json_node_map_put(A, V.val.as_string, B); }
-object_content ::= object_content(A) SR_COMMA SR_STRING(V) SR_COLON object(B).	{ json_node_map_put(A, V.val.as_string, B); }
+object_content(A) ::= SR_STRING(V) SR_COLON primitive(B).			{ A = json_node_create(JSONTYPE_OBJECT), json_node_object_put(A, V.val.as_string, B); }
+object_content(A) ::= SR_STRING(V) SR_COLON list(B).				{ A = json_node_create(JSONTYPE_OBJECT), json_node_object_put(A, V.val.as_string, B); }
+object_content(A) ::= SR_STRING(V) SR_COLON object(B).				{ A = json_node_create(JSONTYPE_OBJECT), json_node_object_put(A, V.val.as_string, B); }
+/* object_content ::= object_content(A) SR_COMMA object_content(B).	{ json_node_object_merge(A, B, true); } // looks quite fancy. but decreases performance */
+object_content ::= object_content(A) SR_COMMA SR_STRING(V) SR_COLON primitive(B).{ json_node_object_put(A, V.val.as_string, B); }
+object_content ::= object_content(A) SR_COMMA SR_STRING(V) SR_COLON list(B).	{ json_node_object_put(A, V.val.as_string, B); }
+object_content ::= object_content(A) SR_COMMA SR_STRING(V) SR_COLON object(B).	{ json_node_object_put(A, V.val.as_string, B); }
 
