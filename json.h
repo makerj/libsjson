@@ -32,7 +32,7 @@ typedef struct _json_node {
 json_node* json_node_create(json_type type);
 void json_node_destroy(json_node* node);
 json_node* json_node_load(FILE* json);
-void json_node_dump(json_node* node);
+void json_node_dump(json_node* node, FILE* stream);
 
 void json_node_list_add(json_node* a_list, json_node* node);
 void json_node_object_put(json_node* a_object, char* a_key, json_node* node);

@@ -102,37 +102,37 @@ json_node* json_node_load(FILE* json) {
 	return parser_ctx.root;
 }
 
-void json_node_dump(json_node* node) {
+void json_node_dump(json_node* node, FILE* stream) {
 	size_t length;
 
 	switch(node->type) {
 		case JSONTYPE_NULL:
-			printf("null");
+			fprintf(stream, "null");
 			break;
 		case JSONTYPE_BOOLEAN:
-			printf("%s", node->val.as_boolean ? "true" : "false");
+			fprintf(stream, "%s", node->val.as_boolean ? "true" : "false");
 			break;
 		case JSONTYPE_NUMBER:
 			if(node->val.as_number == (int64_t)node->val.as_number)
-				printf("%ld", (int64_t)node->val.as_number);
+				fprintf(stream, "%ld", (int64_t)node->val.as_number);
 			else
-				printf("%lf", node->val.as_number);
+				fprintf(stream, "%lf", node->val.as_number);
 			break;
 		case JSONTYPE_STRING:
-			printf("\"%s\"", node->val.as_string);
+			fprintf(stream, "\"%s\"", node->val.as_string);
 			break;
 		case JSONTYPE_LIST:
 			length = node->val.as_list->length;
-			putchar('[');
+			fputc('[', stream);
 			for(size_t i = 0; i < length; ++i) {
-				json_node_dump((json_node*)node->val.as_list->items[i]);
+				json_node_dump((json_node*)node->val.as_list->items[i], stream);
 				if(i + 1 < length)
-					putchar(',');
+					fputc(',', stream);
 			}
-			putchar(']');
+			fputc(']', stream);
 			break;
 		case JSONTYPE_OBJECT:
-			putchar('{');
+			fputc('{', stream);
 			for(size_t i = 0, count = 0; i < node->val.as_object->capacity; ++i) {
 				struct vec* bucket = node->val.as_object->buckets[i];
 				if(!bucket)
@@ -140,15 +140,15 @@ void json_node_dump(json_node* node) {
 
 				for(size_t j = 0; j < bucket->length; ++j) {
 					struct hmap_entry* e = (struct hmap_entry*)bucket->items[j];
-					printf("\"%s\":", e->key);
-					json_node_dump((json_node*)e->value);
+					fprintf(stream, "\"%s\":", e->key);
+					json_node_dump((json_node*)e->value, stream);
 					if(count + 1 < node->val.as_object->length)
-						putchar(',');
+						fputc(',', stream);
 
 					count += 1;
 				}
 			}
-			putchar('}');
+			fputc('}', stream);
 			break;
 	}
 }
@@ -158,7 +158,7 @@ int main(int argc, char** argv) {
 	FILE* json = fmemopen(buf, sizeof(buf), "r");
 
 	json_node* root = json_node_load(json);
-	json_node_dump(root);
+	json_node_dump(root, stdout);
 	json_node_destroy(root);
 
 	return 0;
